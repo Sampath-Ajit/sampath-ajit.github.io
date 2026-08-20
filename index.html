@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sampath Ajit Chittella — Security Researcher | AppSec &amp; DevSecOps</title>
+<meta name="description" content="Security researcher who cut API vulnerabilities 90% at a regulated banking platform. AppSec, DevSecOps automation, threat modeling, SIEM detection engineering.">
+<meta property="og:title" content="Sampath Ajit Chittella — Security Researcher">
+<meta property="og:description" content="Cut API vulnerabilities 90% at a regulated banking platform. AppSec · DevSecOps · Threat Modeling · Detection Engineering.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="scanline"></div>
+  <div class="container">
+    <p class="kicker">// security researcher</p>
+    <h1>Sampath Ajit <span class="accent">Chittella</span></h1>
+    <p class="tagline">I break the build before an attacker does — AppSec, DevSecOps automation,
+    threat modeling, and detection engineering for regulated environments.</p>
+    <div class="hero-stats">
+      <div class="stat"><strong>90%</strong><span>API vulnerabilities cut at a regulated banking platform (Citi)</span></div>
+      <div class="stat"><strong>6</strong><span>security certifications — CEH, CAP, CAPT &amp; more</span></div>
+      <div class="stat"><strong>M.S.</strong><span>Cyber Security — Eastern Illinois University</span></div>
+    </div>
+    <div class="hero-links">
+      <a class="btn btn-primary" href="mailto:sampathajitchittella@gmail.com">Get in touch</a>
+      <a class="btn btn-ghost" href="https://linkedin.com/in/sampath-ajit-chittella" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ===== ABOUT ===== -->
+<section id="about" class="section">
+  <div class="container">
+    <h2><span class="idx">01</span> About</h2>
+    <div class="about-grid">
+      <p>I'm a security engineer who treats the SDLC as the attack surface. At Citi's regulated
+      banking platform I built and owned the automated SAST/DAST/SCA pipelines that cut API
+      vulnerabilities by 90% — and sustained that reduction through continuous monitoring.</p>
+      <p>Since then I've embedded Veracode, Checkmarx, Burp Suite and Snyk into enterprise CI/CD,
+      led STRIDE threat-modeling workshops with engineering teams, hardened Kubernetes and AWS IAM
+      with policy-as-code, stood up Elastic SIEM detections that caught real credential-stuffing
+      patterns, and run full NIST 800-61 incident response cycles end-to-end.</p>
+      <p>My work is documented, not asserted: <a href="#projects">Project RAMPART</a>, my open
+      two-volume AppSec engineering curriculum, shows every pipeline, detection rule, and fix
+      step by step.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXPERIENCE ===== -->
+<section id="experience" class="section section-alt">
+  <div class="container">
+    <h2><span class="idx">02</span> Experience</h2>
+    <div class="timeline">
+
+      <article class="job">
+        <div class="job-head">
+          <h3>Senior Security Engineer</h3>
+          <span class="job-meta">Cloudorama Solutions · Sioux Falls, SD · Apr 2026 – Present</span>
+        </div>
+        <ul>
+          <li>Embedded SAST/DAST/IAST (Veracode, Checkmarx, Burp Suite, Snyk) into CI/CD pipelines — shifting detection left and cutting time-to-detect versus late-stage review.</li>
+          <li>Reviewed Java, .NET and Node.js code against OWASP Top 10, consistently reducing high-risk defects reaching production.</li>
+          <li>Assessed IaC and Kubernetes configurations against CIS Benchmarks and NIST guidance, closing cloud/container misconfigurations before deployment.</li>
+          <li>Led STRIDE threat-modeling workshops; authored risk reports adopted by engineering and audit teams, accelerating audit readiness.</li>
+        </ul>
+      </article>
+
+      <article class="job">
+        <div class="job-head">
+          <h3>Senior Application Security Engineer</h3>
+          <span class="job-meta">Horizon IT · Sep 2025 – Mar 2026</span>
+        </div>
+        <ul>
+          <li>Built a self-hosted GitLab CI/CD pipeline enforcing Semgrep (SAST), Trivy (SCA), Gitleaks (secrets) and Checkov (IaC) as merge-blocking gates, with ZAP DAST against staged deployments.</li>
+          <li>Found and fixed a Broken Object-Level Authorization (BOLA) flaw and an unauthenticated internal service — implemented JWT service-to-service auth and API rate limiting.</li>
+          <li>Enforced least-privilege AWS IAM/WAF via Terraform; hardened Kubernetes with Pod Security Standards and default-deny NetworkPolicies.</li>
+          <li>Deployed Elastic SIEM with tuned credential-stuffing and token-probing detections; led a full NIST 800-61 incident response cycle end-to-end.</li>
+          <li>Built a Claude API-powered triage tool auto-classifying scanner findings by severity with suggested remediations.</li>
+        </ul>
+      </article>
+
+      <article class="job">
+        <div class="job-head">
+          <h3>Application Security Engineer</h3>
+          <span class="job-meta">Tata Consultancy Services · Hyderabad · Oct 2021 – Jul 2023</span>
+        </div>
+        <ul>
+          <li><strong>Cut API vulnerabilities 90% within one year</strong> as API Security Focal Point for a regulated banking platform, sustaining the reduction through continuous monitoring.</li>
+          <li>Built automated SAST/DAST/SCA pipelines in Jenkins giving auditors full traceability across releases.</li>
+          <li>Ran penetration tests with Fortify, AppScan, WebInspect and Burp Suite Pro — surfacing critical risks before every production release.</li>
+          <li>Led STRIDE/DREAD threat modeling in design reviews; owned SIEM-driven incident response and remediation verification.</li>
+        </ul>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECTS ===== -->
+<section id="projects" class="section">
+  <div class="container">
+    <h2><span class="idx">03</span> Projects</h2>
+
+    <article class="project-card featured">
+      <div class="project-head">
+        <h3>🛡 Project RAMPART</h3>
+        <span class="pill">Flagship</span>
+      </div>
+      <p class="project-sub">A research-level Application Security engineering curriculum &amp; fully worked lab —
+      two companion books covering the entire senior AppSec skill set, demonstrated end-to-end on a real target.</p>
+      <div class="project-stats">
+        <div><strong>2</strong><span>volumes — theory + implementation</span></div>
+        <div><strong>13</strong><span>chapters, strictly sequential</span></div>
+        <div><strong>10+</strong><span>security tools integrated</span></div>
+        <div><strong>5</strong><span>compliance frameworks mapped</span></div>
+      </div>
+      <p>Instead of a toy demo, I built <strong>Fulcrum</strong> — a polyglot application with deliberately
+      planted, documented vulnerabilities — then attacked and defended it through an industrial-grade
+      pipeline, documenting every command:</p>
+      <div class="rampart-grid">
+        <div class="rampart-item"><h4>Threat Modeling</h4><p>DFDs + STRIDE applied to Fulcrum's architecture; manual code review methodology before any tooling.</p></div>
+        <div class="rampart-item"><h4>Pipeline Gates</h4><p>Self-hosted GitLab CI/CD: Semgrep, Trivy, Gitleaks, Checkov as merge-blocking gates; OWASP ZAP DAST against staged builds.</p></div>
+        <div class="rampart-item"><h4>Cloud &amp; IaC</h4><p>Terraform on LocalStack — planted, caught and fixed a wildcard IAM policy; WAF rate-based rules via code.</p></div>
+        <div class="rampart-item"><h4>Kubernetes Hardening</h4><p>kind cluster with Pod Security Standards and default-deny NetworkPolicies.</p></div>
+        <div class="rampart-item"><h4>API Security</h4><p>Fixed planted BOLA flaw, added JWT service-to-service auth and rate limiting to the microservices API.</p></div>
+        <div class="rampart-item"><h4>Detection Engineering</h4><p>Elastic SIEM with a tuned credential-stuffing rule — validated against both attack and benign traffic.</p></div>
+        <div class="rampart-item"><h4>Incident Response</h4><p>Full NIST 800-61 simulation against a live-open vulnerability, with a complete incident report.</p></div>
+        <div class="rampart-item"><h4>GRC + AI Triage</h4><p>Risk register mapped to NIST CSF, PCI DSS, GDPR, SOC 2 &amp; SOX; Claude-powered scanner-findings triage bot.</p></div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section id="skills" class="section section-alt">
+  <div class="container">
+    <h2><span class="idx">04</span> Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-group"><h4>Security</h4>
+        <p>AppSec &amp; Infrastructure Security · STRIDE/DREAD Threat Modeling · Vulnerability Management · Penetration Testing · SIEM Monitoring &amp; IR · IAM &amp; Access Controls · Secure SDLC / DevSecOps · Compliance &amp; Audit Support</p></div>
+      <div class="skill-group"><h4>Tooling</h4>
+        <p>Splunk · Azure Sentinel · Defender for Endpoint · SentinelOne · Fortify · WebInspect · Veracode · Checkmarx · SonarQube · Nessus · Burp Suite Pro · OWASP ZAP · Metasploit</p></div>
+      <div class="skill-group"><h4>DevSecOps / CI-CD</h4>
+        <p>GitHub Actions · Jenkins · GitLab CI/CD · Docker · Gitleaks · Semgrep · Trivy · Checkov · Syft · Grype · OPA/Conftest · SAST/DAST/SCA/IaC Automation</p></div>
+      <div class="skill-group"><h4>Detection Engineering</h4>
+        <p>Elastic Stack (Elasticsearch, Logstash, Kibana) · Filebeat · Elastic Agent/Fleet · Firewall Telemetry (UFW) · Log Analysis</p></div>
+      <div class="skill-group"><h4>Network / IAM</h4>
+        <p>Nmap · Wireshark · IDS/IPS · Network Segmentation · Authentication &amp; Authorization Controls</p></div>
+      <div class="skill-group"><h4>Cloud &amp; Platforms</h4>
+        <p>Microsoft Azure · AWS (IAM, WAF) · Kubernetes · Terraform · UTM Virtualization</p></div>
+      <div class="skill-group"><h4>Scripting &amp; OS</h4>
+        <p>Python · Bash · RHEL · CentOS · Windows</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CERTS & EDUCATION ===== -->
+<section id="credentials" class="section">
+  <div class="container">
+    <h2><span class="idx">05</span> Credentials</h2>
+    <div class="cred-grid">
+      <div class="cred-block">
+        <h4>Certifications</h4>
+        <ul class="cert-list">
+          <li>Certified Ethical Hacker (CEH)</li>
+          <li>Certified AppSec Practitioner (CAP)</li>
+          <li>Certified Associate Penetration Tester (CAPT)</li>
+          <li>CSI Linux Certified Investigator</li>
+          <li>Certified Threat Intelligence &amp; Governance Analyst (CTIGA)</li>
+          <li>Linux Essentials (LPI)</li>
+        </ul>
+      </div>
+      <div class="cred-block">
+        <h4>Education</h4>
+        <p class="degree">M.S. Cyber Security</p>
+        <p class="school">Eastern Illinois University · May 2025 · GPA 3.3/4.0</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact" class="section contact">
+  <div class="container">
+    <h2><span class="idx">06</span> Contact</h2>
+    <p class="contact-line">Hiring for AppSec, DevSecOps or detection engineering? Let's talk.</p>
+    <div class="hero-links">
+      <a class="btn btn-primary" href="mailto:sampathajitchittella@gmail.com">sampathajitchittella@gmail.com</a>
+      <a class="btn btn-ghost" href="https://linkedin.com/in/sampath-ajit-chittella" target="_blank" rel="noopener">linkedin.com/in/sampath-ajit-chittella ↗</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Sampath Ajit Chittella · Built from zero, like everything else worth building.</p>
+  </div>
+</footer>
+
+</body>
+</html>
