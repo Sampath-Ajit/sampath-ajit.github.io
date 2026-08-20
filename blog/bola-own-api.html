@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Planted a BOLA Vulnerability in My Own API — Then Fixed It the Right Way | Sampath Ajit Chittella</title>
+<meta name="description" content="Why the #1 OWASP API risk survives code review, how one curl exploits it, and the minimal structural fix that actually works.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="nav">
+  <nav class="container nav-inner">
+    <a class="brand" href="../#top"><span class="dot"></span>SAC</a>
+    <ul class="nav-links">
+      <li><a href="../#top">Home</a></li>
+      <li><a href="../#armory">Armory</a></li>
+      <li><a href="../#campaigns">Campaigns</a></li>
+      <li><a href="../#projects">Projects</a></li>
+      <li><a href="./" class="active">Writing</a></li>
+      <li><a href="../#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+<section class="post-hero">
+  <div class="container">
+    <div class="kicker-row"><span class="dash"></span><span class="kicker">API Security · OWASP #1</span></div>
+    <h1>I Planted a BOLA Vulnerability in My Own API — Then Fixed It the Right Way</h1>
+    <p class="post-sub">Why the top OWASP API risk survives even code that "does everything right."</p>
+    <div class="post-meta"><span>Aug 2026</span><span>·</span><span>5 min read</span><span>·</span><span>Field Report 001</span></div>
+  </div>
+</section>
+
+<article class="prose">
+  <p>BOLA — Broken Object-Level Authorization — sits at <strong>#1 on the OWASP API Security Top 10</strong> for a reason. It's the vulnerability behind some of the largest data leaks of the last decade, and it consistently survives code review, SAST scans, and penetration tests that only check <em>"is this endpoint authenticated?"</em></p>
+
+  <p>Authentication answers <em>who are you?</em> Authorization answers <em>is this yours?</em> Most BOLA bugs exist because a team answered the first question and assumed that settled the second.</p>
+
+  <p>To prove how small the gap is, I built an API with a deliberately planted BOLA flaw as part of my AppSec research lab (<strong>Fulcrum</strong>, a deliberately vulnerable polyglot microservices application), exploited it with a single <code>curl</code>, and then fixed it properly. Here's the whole story.</p>
+
+  <h2>The vulnerable endpoint</h2>
+  <p>Here's an invoice endpoint from Fulcrum. Spot the problem:</p>
+
+<pre><code>// Before (vulnerable):
+app.get('/invoices/:id', authenticate, async (req, res) => {
+  const result = await pool.query(
+    'SELECT * FROM invoices WHERE id = $1',
+    [req.params.id]
+  );
+  if (!result.rows[0]) return res.status(404).end();
+  res.json(result.rows[0]);
+});</code></pre>
+
+  <p>Read it like a reviewer would:</p>
+  <ul>
+    <li>✅ Requires authentication (the <code>authenticate</code> middleware verifies the JWT)</li>
+    <li>✅ Uses parameterized queries — no SQL injection</li>
+    <li>✅ Returns 404 for missing objects</li>
+    <li>❌ <strong>Never asks whose invoice it is</strong></li>
+  </ul>
+
+  <p>The query fetches <em>any</em> invoice by ID. The JWT got you in the door; after that, the API will happily hand you strangers' financial records.</p>
+
+  <h2>The exploit is embarrassingly boring</h2>
+
+<pre><code># As User A, request User B's invoice:
+curl -H "Authorization: Bearer &lt;user_A_token&gt;" \
+     http://localhost:3000/invoices/&lt;user_B_invoice_id&gt;</code></pre>
+
+  <p>That's it. No injection, no crypto break, no privilege escalation chain. Just change an ID. If IDs are sequential integers, an attacker doesn't even need to guess — they enumerate. This is exactly how mass data-scraping incidents happen against production APIs.</p>
+
+  <h2>The fixes that don't fix it</h2>
+  <p>Before showing the real fix, three "fixes" I see teams reach for that fail:</p>
+  <ul>
+    <li><strong>"Use UUIDs instead of sequential IDs."</strong> GUIDs are unguessable-ish, not secret. They leak in referrals, logs, browser history, other endpoints. Security by obscurity with extra steps.</li>
+    <li><strong>"Strip fields from the response."</strong> Removing <code>owner_id</code> from the JSON changes nothing about who can <em>fetch</em> the object.</li>
+    <li><strong>"Check authorization on the frontend."</strong> The frontend is under the attacker's control. Always.</li>
+  </ul>
+
+  <h2>The actual fix: bind ownership into the query</h2>
+  <p>The minimal structural fix is to make ownership a filter on the data access itself, using an identity taken from the <strong>verified token</strong> — never from anything client-supplied:</p>
+
+<pre><code>// After (fixed):
+app.get('/invoices/:id', authenticate, async (req, res) => {
+  const result = await pool.query(
+    'SELECT * FROM invoices WHERE id = $1 AND owner_id = $2',
+    [req.params.id, req.user.sub]   // sub = subject claim from jwt.verify()
+  );
+  if (!result.rows[0]) return res.status(404).end();
+  res.json(result.rows[0]);
+});</code></pre>
+
+  <p>Three properties make this correct:</p>
+  <ul>
+    <li><strong>The identity comes from the server-verified JWT</strong> (<code>req.user.sub</code>, populated by <code>jwt.verify()</code> in the auth middleware). A client can only present tokens we signed.</li>
+    <li><strong>Ownership is enforced at the data layer.</strong> There is no code path where an object is fetched and ownership checked "afterward" — if you don't own it, the row simply doesn't exist for you.</li>
+    <li><strong>It fails closed with a 404, not a 403.</strong> Confirming an object exists but belongs to someone else is itself information leakage. 404 keeps the enumeration blind.</li>
+  </ul>
+
+  <h2>Verify like an attacker, not a developer</h2>
+  <p>A fix isn't a fix until it's reproduced against:</p>
+
+<pre><code>docker compose up --build -d
+
+# Two different users' tokens via /login, then:
+curl -H "Authorization: Bearer &lt;user_A_token&gt;" \
+     http://localhost:3000/invoices/&lt;user_B_invoice_id&gt;
+# → 404, not User B's data. ✔</code></pre>
+
+  <p>Then re-run an <strong>authenticated DAST scan</strong> (OWASP ZAP, logged-in context) against the fixed build and confirm the finding no longer surfaces. Document before/after. "Should be fine now" is not a remediation state.</p>
+
+  <h2>The takeaway checklist</h2>
+  <p>For every endpoint that returns or mutates an object by identifier:</p>
+  <ul>
+    <li>Where does the identity used for the access decision come from — verified token, or client input?</li>
+    <li>Is ownership part of the query itself, or a check bolted on after fetching?</li>
+    <li>Does a cross-tenant request return 404 (blind) rather than 403 (leaky)?</li>
+    <li>Do your automated tests include <strong>User A requesting User B's object</strong> as a negative case?</li>
+    <li>Do your DAST scans run <em>authenticated</em>, where BOLA actually lives?</li>
+  </ul>
+
+  <p>BOLA isn't exotic. It's a one-line omission with org-wide blast radius — and a one-line fix away from dead.</p>
+
+  <blockquote>I document projects like this end-to-end — threat model to pipeline to detection engineering — in <a href="../#projects">Project RAMPART</a>.</blockquote>
+
+  <a class="back-link" href="./">← Back to Writing</a>
+</article>
+</main>
+
+<footer>
+  <div class="container foot-base" style="border-top:none;padding-top:0;">
+    <p>© 2026 Sampath Ajit Chittella</p>
+    <p class="foot-status"><span class="pulse-dot"></span>Always vigilant</p>
+  </div>
+</footer>
+
+</body>
+</html>
